@@ -1,6 +1,7 @@
 import '../styles/sidebar.scss';
 import { Button } from './Button';
-import { MovieCard } from './MovieCard';
+import { api } from '../services/api'
+import { useEffect, useState } from 'react';
 
 interface GenreResponseProps {
   id: number;
@@ -9,16 +10,21 @@ interface GenreResponseProps {
 }
 
 interface Props{
-  genres: GenreResponseProps[];
   selectedGenreId: number;
   handleClickButton(id:number): void;
 }
 
 export function SideBar(props: Props) {
 
-  const genres = props.genres;
   const handleClickButton = props.handleClickButton;
   const selectedGenreId = props.selectedGenreId;
+  const [genres, setGenres] = useState<GenreResponseProps[]>([]);
+
+  useEffect(() => {
+    api.get<GenreResponseProps[]>('genres').then(response => {
+      setGenres(response.data);
+    });
+  }, []);
 
   return(
     <nav className="sidebar">
